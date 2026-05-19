@@ -260,7 +260,7 @@ int main() {
                 continue;
             }
 
-            // --- HIEU UNG DANG TAI DU LIEU (LOADING ANIMATION) ---
+            // HIEU UNG DANG TAI DU LIEU (LOADING ANIMATION)
             cout << "\nDang lay du lieu tu file input.txt";
             for(int i = 0; i < 6; i++) {
                 cout << ".";
