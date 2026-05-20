@@ -152,7 +152,7 @@ void subMenuProcess(GraphColoring &g) {
         //  Doi mau chu sang Vang (Mã mau 14) cho dong thong bao 
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole, 14); 
-        cout << "  (*) Thong bao: Da co du lieu do thi san sang de xu ly." << endl;
+        cout << "  (*) Thong bao: Da co du lieu do thi. San sang de xu ly." << endl;
         SetConsoleTextAttribute(hConsole, 11); // Tra lai mau xanh Cyan (Mã 11)
         cout << "--------------------------------------------------------------------------" << endl;
         
