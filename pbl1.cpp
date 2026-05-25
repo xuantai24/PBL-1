@@ -345,68 +345,117 @@ int main() {
             cout << "==========================================================================" << endl;
             cout << "|                                                                        |" << endl;
             cout << "|                      NHAP DU LIEU DO THI BANG TAY                      |" << endl;
-            cout << "|                                                                        |" << endl;
+            cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
             cout << "==========================================================================" << endl << endl;
             SetConsoleTextAttribute(hConsole,10);
-            cout << "Nhap so dinh: ";
-            if (!(cin >> n)) {
-                cin.clear(); cin.ignore(10000, '\n');
-                cout << "(!) Loi: Vui long chi nhap con so!" << endl;
-                cout << "Nhan Enter de quay lai menu..."; cin.get(); continue;
-            } else if (n <= 0 || n > MAX_V) {
-                cout << "(!) Loi: So dinh phai tu 1 den " << MAX_V << "!" << endl;
-                cout << "Nhan Enter de quay lai menu..."; cin.ignore(); cin.get(); continue;
+
+            string inputStr;
+
+            cout << "Nhap so dinh (Nhap 'q' de huy va quay lai Menu chinh): ";
+            cin >> inputStr;
+            
+            // Kiem tra thoat
+            if (inputStr == "q" || inputStr == "Q") {
+                cout << "\n-> Da huy lenh. Dang quay lai Menu chinh..." << endl;
+                Sleep(800);
+                break; 
             }
-            cout << "Nhap so canh: ";
-            if (!(cin >> e)) { 
-                cin.clear(); cin.ignore(10000, '\n');
-                cout << "(!) Loi: Vui long chi nhap con so!" << endl;
-                cout << "Nhan Enter de quay lai menu..."; cin.get(); continue;
-            } else if (e < 0 || e > n * (n - 1) / 2) {
-                cout << "(!) Loi: So canh khong hop le!" << endl;
-                cout << "Nhan Enter de quay lai menu..."; cin.ignore(); cin.get(); continue;
+            
+            // Co gang chuyen chuoi thanh so
+            try {
+                n = stoi(inputStr);
+                if (n <= 0 || n > MAX_V) {
+                    cout << "(!) Loi: So dinh phai tu 1 den " << MAX_V << "!" << endl;
+                    cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
+                }
+            } catch (...) {
+                // Bat loi neu nguoi dung nhap chu ma khong phai 'q' (VD: 'abc')
+                cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
+                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
+            }
+
+            int maxEdges = n * (n - 1) / 2;
+            cout << "Nhap so canh (Toi da " << maxEdges << ", hoac 'q' de huy va quay lai Menu chinh): ";
+            cin >> inputStr;
+            
+            if (inputStr == "q" || inputStr == "Q") {
+                cout << "\n-> Da huy lenh. Dang quay lai Menu chinh..." << endl;
+                Sleep(800);
+                break;
+            }
+            
+            try {
+                e = stoi(inputStr);
+                if (e < 0 || e > maxEdges) {
+                    cout << "(!) Loi: So canh khong hop le!" << endl;
+                    cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
+                }
+            } catch (...) {
+                cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
+                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
             }
             
             GraphColoring g(n);
+            bool isCancelled = false; // danh dau thoat giua chung
 
             SetConsoleTextAttribute(hConsole, 14);
-            cout << "\n==================================================" << endl;
+            if (e > 0) {
+                cout << "\n==================================================" << endl;
                 cout << "             HUONG DAN NHAP CANH DO THI           " << endl;
                 cout << "==================================================" << endl;
                 cout << " - Do thi hien tai co " << n << " dinh (Tu 1 den " << n << ")." << endl;
-                cout << " - De tao canh, nhap 2 so cach nhau boi dau cach." << endl;
-                cout << " - Vi du: Muon noi Dinh 1 va Dinh 2, ban go: 1 2" << endl;
-                cout << "--------------------------------------------------" << endl << endl;   
+                cout << " - Nhap 2 so (u v) de tao canh (Vi du: 1 2)." << endl;
+                cout << " - (!) Go phim [q] vao bat cu luc nao de HUY va thoat." << endl;
+                cout << "--------------------------------------------------" << endl;
             SetConsoleTextAttribute(hConsole, 10);
 
-            for (int i = 0; i < e; i++) {
-                    int u, v; 
+                for (int i = 0; i < e; i++) {
+                    string strU, strV; 
                     while (true) {
-                        cout << " -> Nhap canh thu " << i + 1 << "/" << e << " (u v): ";
+                        cout << " -> Nhap canh thu " << i + 1 << "/" << e << " (u v hoac q): ";
+                        cin >> strU;
                         
-                        // Kiem tra neu nguoi dung nhap chu thay vi so
-                        if (!(cin >> u >> v)) {
-                            cin.clear(); cin.ignore(10000, '\n');
-                            cout << "    (!) Sai dinh dang! Vui long nhap 2 con so." << endl;
-                            continue;
+                        if (strU == "q" || strU == "Q") {
+                            isCancelled = true; 
+                            break; 
                         }
                         
-                        // Kiem tra tinh logic cua dinh (phai tu 1 den n)
-                        if (u < 1 || u > n || v < 1 || v > n) {
-                            cout << "    (!) Loi: Dinh phai nam trong khoang tu 1 den " << n << ". Nhap lai!" << endl;
-                            continue;
+                        cin >> strV;
+                        
+                        if (strV == "q" || strV == "Q") {
+                            isCancelled = true;
+                            break;
                         }
 
-                        // Kiem tra loi tu noi (VD: 1 1)
-                        if (u == v) {
-                            cout << "    (!) Loi: Khong duoc noi 1 dinh voi chinh no. Nhap lai!" << endl;
-                            continue;
+                        try {
+                            int u = stoi(strU);
+                            int v = stoi(strV);
+
+                            if (u < 1 || u > n || v < 1 || v > n) {
+                                cout << "    (!) Loi: Dinh phai tu 1 den " << n << ". Nhap lai!" << endl;
+                                continue;
+                            }
+                            if (u == v) {
+                                cout << "    (!) Loi: Khong duoc noi dinh voi chinh no. Nhap lai!" << endl;
+                                continue;
+                            }
+                            
+                            g.addEdge(u - 1, v - 1);
+                            break; 
+                            
+                        } catch (...) {
+                            cout << "    (!) Sai dinh dang! Vui long nhap so hoac 'q'." << endl;
                         }
-                        
-                        // Tru di 1 de phu hop voi code
-                        g.addEdge(u - 1, v - 1);
-                        break;
                     }
+                    
+                    if (isCancelled) break;
+                }
+            }
+            
+            if (isCancelled) {
+                cout << "\n-> Da huy nhap canh. Dang quay lai Menu chinh..." << endl;
+                Sleep(800);
+                break;
             }
             
             // --- THONG BAO NHAP TAY THANH CONG ---
