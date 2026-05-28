@@ -19,13 +19,14 @@ To use the file input mode, create an `input.txt` file in the same directory as 
 - **Next `E` lines:** Each line represents an edge connecting vertex `u` and vertex `v`. *Note: Vertices must be 0-indexed (from `0` to `V-1`).*
 
 **Example `input.txt`:**
+```text
 5 5
 0 1
 1 2
 2 3
 3 4
 4 0
-
+```
 ## Authors
 - **Mai Xuan Tai** - Class 25T_DT4
 - **Nguyen Quoc Thinh** - Class 25T_DT4
