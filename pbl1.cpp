@@ -226,7 +226,7 @@ void subMenuProcess(GraphColoring &g) {
         if (subChoice == 1) {
             g.runDSATUR();
             g.printResult();
-            g.saveToFile("output.txt");
+            g.saveToFile("output.dat");
             g.drawGraph();
         } 
         else if (subChoice == 2) {
@@ -272,7 +272,7 @@ int main() {
             
         case 1:
         {
-            ifstream f("input.txt");
+            ifstream f("input.dat");
             if (!f) { 
                 cout << "(!) Loi: Khong thay file!" << endl; 
                 cout << "Nhan Enter de quay lai menu..."<< endl; 
