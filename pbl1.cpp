@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <iomanip>
-#include <windows.h> // Thu vien bat buoc cho hieu ung Loading va doi mau chu
+#include <iomanip> // can chinh chu
+#include <windows.h> // doi mau chu
 
 using namespace std;
 
@@ -22,7 +22,7 @@ private:
     };
 
 public:
-    // khoi tao do thi voi V dinh, mac dinh khong co canh va chua to mau
+    // khoi tao do thi voi V vung, mac vung khong co vung ke nhau va chua to mau
     GraphColoring(int v = 0) {
         this->V = v;
         for (int i = 0; i < MAX_V; i++) {
@@ -44,7 +44,7 @@ public:
         }
     }
     
-    // tinh do bao hoa cua dinh u
+    // tinh do bao hoa cua vung u
     int getSaturation(int u) {
         bool usedColors[MAX_V + 1];
         for (int i = 0; i <= MAX_V; i++) usedColors[i] = false;
@@ -69,7 +69,7 @@ public:
             int maxSat = -1;
             int maxDeg = -1;
             
-            // tim dinh co do bao hoa cao nhat, neu trung thi chon dinh co bac cao nhat
+            // tim vung co do bao hoa cao nhat, neu trung thi chon vung co bac cao nhat
             for (int i = 0; i < V; i++) {
                 if (colors[i] == -1) {
                     int curSat = getSaturation(i);
@@ -86,11 +86,11 @@ public:
                 }
             }
             
-            // khoi tao mang danh dau mau da su dung cho cac dinh ke voi bestV
+            // khoi tao mang danh dau mau da su dung cho cac vung ke voi bestV
             bool available[MAX_V + 1];
             for (int i = 0; i <= MAX_V; i++) available[i] = true;
             
-            // danh dau cac mau da su dung cho cac dinh ke voi bestV
+            // danh dau cac mau da su dung cho cac vung ke voi bestV
             for (int v = 0; v < V; v++) {
                 if (adj[bestV][v] == 1 && colors[v] != -1) {
                     available[colors[v]] = false;
@@ -103,7 +103,7 @@ public:
                 if (available[clr]) break;
             }
             
-            // to mau cho dinh bestV
+            // to mau cho vung bestV
             colors[bestV] = clr;
             coloredCount++;
         }
@@ -122,8 +122,13 @@ public:
         }
 
         f << "graph G {\n";
-
-        // In đỉnh + màu
+        f << "  dpi=300;\n";        // Tang do phan giai len 300 DPI (anh se rat to va net)
+        f << "  nodesep=0.8;\n";    // Tang khoang cach giang ngang giua cac vung
+        f << "  ranksep=1.0;\n";    // Tang khoang cach giang doc giua cac vung
+        
+        // Lam cho cac vong tron to hon va chu to hon
+        f << "  node [width=0.8, height=0.8, fontsize=16];\n";
+        // in dinh + mau
         for (int i = 1; i <= V; i++) {
             f << i << " [style=filled, fillcolor=";
 
@@ -173,7 +178,7 @@ public:
     void printResult() {
         int maxClr = 0;
         cout << "\n========= KET QUA TO MAU =========" << endl;
-        cout << left << setw(10) << "Dinh" << "Ten Mau" << endl;
+        cout << left << setw(10) << "Vung" << "Ten Mau" << endl;
         for (int i = 0; i < V; i++) {
             cout << left << setw(10) << i+1 << getColorName(colors[i]) << endl;
             if (colors[i] > maxClr) maxClr = colors[i];
@@ -190,7 +195,7 @@ public:
         if (!outFile) return;
         outFile << "KET QUA TO MAU\n";
         for (int i = 0; i < V; i++) {
-            outFile << "Dinh " << i+1 << ": " << getColorName(colors[i]) << "\n";
+            outFile << "Vung " << i+1 << ": " << getColorName(colors[i]) << "\n";
         }
         outFile.close();
         cout << "-> Luu file " << filename << " thanh cong!" << endl;
@@ -248,7 +253,7 @@ int main() {
         cout << "==========================================================================" << endl;
         cout << "|                                                                        |" << endl;
         cout << "|       CHUONG TRINH MO PHONG BAI TOAN TO MAU BAN DO BANG TO MAU         |" << endl;
-        cout << "|                       CAC DINH CUA DO THI                              |" << endl;
+        cout << "|                       CAC vung CUA DO THI                              |" << endl;
         cout << "|                                                                        |" << endl;
         cout << "==========================================================================" << endl << endl;
         SetConsoleTextAttribute(hConsole, 10); // Mau xanh la cho cac lua chon
@@ -272,26 +277,47 @@ int main() {
             
         case 1:
         {
-            ifstream f("input.dat");
+            system("cls");
+            cin.ignore(); // Xoa bo nho dem sau khi doc so tu ban phim
+            SetConsoleTextAttribute(hConsole, 14);
+            cout << "==========================================================================" << endl;
+            cout << "|                                                                        |" << endl;
+            cout << "|                      NHAP DU LIEU DO THI BANG FILE                     |" << endl;
+            cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
+            cout << "==========================================================================" << endl << endl;
+            SetConsoleTextAttribute(hConsole,10);
+            
+            string fileinput;
+            cout << "Nhap ten file (Mac dinh la input.dat): ";
+            getline(cin, fileinput); // doc toan bo du lieu, bao gom ca khoang trang
+            if (fileinput.empty()) {
+                fileinput = "input.dat";
+            }
+            if (fileinput == "q" || fileinput == "Q") {
+                break; 
+            }
+            
+              
+            ifstream f(fileinput);
             if (!f) { 
                 cout << "(!) Loi: Khong thay file!" << endl; 
                 cout << "Nhan Enter de quay lai menu..."<< endl; 
-                cin.ignore(); cin.get(); continue;
+                cin.get(); continue;
             }
             if (!(f >> n >> e)) {
                 cout << "(!) Loi: Du lieu trong file khong hop le!" << endl; 
                 cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.ignore(); cin.get(); continue;
+                cin.get(); continue;
             }
             if (n <= 0 || n > MAX_V) {
-                cout << "(!) Loi: So dinh phai tu 1 den " << MAX_V << "!" << endl; 
+                cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl; 
                 cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.ignore(); cin.get(); continue;
+                cin.get(); continue;
             }
             if (e < 0 || e > n * (n - 1) / 2) {
-                cout << "(!) Loi: So canh khong hop le!" << endl; 
+                cout << "(!) Loi: So vung ke nhau khong hop le!" << endl; 
                 cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.ignore(); cin.get(); continue;
+                cin.get(); continue;
             }
             
             GraphColoring g(n);
@@ -300,12 +326,12 @@ int main() {
                 int u, v; 
                 if (!(f >> u >> v)) {
                     check = false;
-                    cout << "(!) Loi: Du lieu canh trong file khong hop le!" << endl; 
+                    cout << "(!) Loi: Du lieu vung ke nhau trong file khong hop le!" << endl; 
                     break;
                 }
                 if (u < 0 || u >= n || v < 0 || v >= n) {
                     check = false;
-                    cout << "(!) Loi: Canh khong hop le!" << endl; 
+                    cout << "(!) Loi: Vung ke nhau khong hop le!" << endl; 
                     break;
                 }
                 g.addEdge(u, v);
@@ -314,22 +340,15 @@ int main() {
             
             if (!check) {
                 cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.ignore(); cin.get();
+                cin.get();
                 continue;
-            }
-
-            // HIEU UNG DANG TAI DU LIEU (LOADING ANIMATION)
-            cout << "\nDang lay du lieu tu file input.txt";
-            for(int i = 0; i < 6; i++) {
-                cout << ".";
-                Sleep(300); // Dung chuong trinh 300 milliseconds moi dau cham
             }
             
             SetConsoleTextAttribute(hConsole, 14); // Mau vang cho thong bao
             cout << "\n\n=> THANH CONG: Da nap du lieu vao he thong!" << endl;
             SetConsoleTextAttribute(hConsole, 10); // Tra lai mau xanh la
             cout << "Nhan Enter de tiep tuc..."; 
-            cin.ignore(); cin.get();
+            cin.get();
             
             // goi menu phu
             subMenuProcess(g);
@@ -349,13 +368,11 @@ int main() {
 
             string inputStr;
 
-            cout << "Nhap so dinh (Nhap 'q' de huy va quay lai Menu chinh): ";
+            cout << "Nhap so vung (Nhap 'q' de huy va quay lai Menu chinh): ";
             cin >> inputStr;
             
             // Kiem tra thoat
             if (inputStr == "q" || inputStr == "Q") {
-                cout << "\n-> Da huy lenh. Dang quay lai Menu chinh..." << endl;
-                Sleep(800);
                 break; 
             }
             
@@ -363,7 +380,7 @@ int main() {
             try {
                 n = stoi(inputStr);
                 if (n <= 0 || n > MAX_V) {
-                    cout << "(!) Loi: So dinh phai tu 1 den " << MAX_V << "!" << endl;
+                    cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl;
                     cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
                 }
             } catch (...) {
@@ -373,19 +390,17 @@ int main() {
             }
 
             int maxEdges = n * (n - 1) / 2;
-            cout << "Nhap so canh (Toi da " << maxEdges << ", hoac 'q' de huy va quay lai Menu chinh): ";
+            cout << "Nhap so vung ke nhau (Toi da " << maxEdges << ", hoac 'q' de huy va quay lai Menu chinh): ";
             cin >> inputStr;
             
             if (inputStr == "q" || inputStr == "Q") {
-                cout << "\n-> Da huy lenh. Dang quay lai Menu chinh..." << endl;
-                Sleep(800);
                 break;
             }
             
             try {
                 e = stoi(inputStr);
                 if (e < 0 || e > maxEdges) {
-                    cout << "(!) Loi: So canh khong hop le!" << endl;
+                    cout << "(!) Loi: So vung ke nhau khong hop le!" << endl;
                     cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
                 }
             } catch (...) {
@@ -399,10 +414,10 @@ int main() {
             SetConsoleTextAttribute(hConsole, 14);
             if (e > 0) {
                 cout << "\n==================================================" << endl;
-                cout << "             HUONG DAN NHAP CANH DO THI           " << endl;
+                cout << "             HUONG DAN NHAP vung ke nhau DO THI           " << endl;
                 cout << "==================================================" << endl;
-                cout << " - Do thi hien tai co " << n << " dinh (Tu 1 den " << n << ")." << endl;
-                cout << " - Nhap 2 so (u v) de tao canh (Vi du: 1 2)." << endl;
+                cout << " - Do thi hien tai co " << n << " vung (Tu 1 den " << n << ")." << endl;
+                cout << " - Nhap 2 so (u v) de tao vung ke nhau (Vi du: 1 2)." << endl;
                 cout << " - (!) Go phim [q] vao bat cu luc nao de HUY va thoat." << endl;
                 cout << "--------------------------------------------------" << endl;
             SetConsoleTextAttribute(hConsole, 10);
@@ -410,7 +425,7 @@ int main() {
                 for (int i = 0; i < e; i++) {
                     string strU, strV; 
                     while (true) {
-                        cout << " -> Nhap canh thu " << i + 1 << "/" << e << " (u v hoac q): ";
+                        cout << " -> Nhap vung ke nhau thu " << i + 1 << "/" << e << " (u v hoac q): ";
                         cin >> strU;
                         
                         if (strU == "q" || strU == "Q") {
@@ -430,11 +445,11 @@ int main() {
                             int v = stoi(strV);
 
                             if (u < 1 || u > n || v < 1 || v > n) {
-                                cout << "    (!) Loi: Dinh phai tu 1 den " << n << ". Nhap lai!" << endl;
+                                cout << "    (!) Loi: vung phai tu 1 den " << n << ". Nhap lai!" << endl;
                                 continue;
                             }
                             if (u == v) {
-                                cout << "    (!) Loi: Khong duoc noi dinh voi chinh no. Nhap lai!" << endl;
+                                cout << "    (!) Loi: Khong duoc noi vung voi chinh no. Nhap lai!" << endl;
                                 continue;
                             }
                             
@@ -442,7 +457,7 @@ int main() {
                             break; 
                             
                         } catch (...) {
-                            cout << "    (!) Sai dinh dang! Vui long nhap so hoac 'q'." << endl;
+                            cout << "    (!) Sai vung dang! Vui long nhap so hoac 'q'." << endl;
                         }
                     }
                     
@@ -451,8 +466,6 @@ int main() {
             }
             
             if (isCancelled) {
-                cout << "\n-> Da huy nhap canh. Dang quay lai Menu chinh..." << endl;
-                Sleep(800);
                 break;
             }
             
