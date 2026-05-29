@@ -1,4 +1,8 @@
 graph G {
+  dpi=300;
+  nodesep=0.8;
+  ranksep=1.0;
+  node [width=0.8, height=0.8, fontsize=16];
 1 [style=filled, fillcolor=red];
 2 [style=filled, fillcolor=green];
 3 [style=filled, fillcolor=green];
