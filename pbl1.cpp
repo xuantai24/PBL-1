@@ -288,7 +288,7 @@ int main() {
             SetConsoleTextAttribute(hConsole,10);
             
             string fileinput;
-            cout << "Nhap ten file (Mac dinh la input.dat): ";
+            cout << "Nhap ten file (Neu khong nhap, mac dinh la input.dat): ";
             getline(cin, fileinput); // doc toan bo du lieu, bao gom ca khoang trang
             if (fileinput.empty()) {
                 fileinput = "input.dat";
