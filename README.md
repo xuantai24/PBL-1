@@ -13,7 +13,7 @@ After running the program, a `graph.dot` file is generated. You can visualize th
 1. Installing [Graphviz](https://graphviz.org/) on your machine 
 2. Or copying the content of `graph.dot` and pasting it into [GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/).
 
-## Input File Format (`input.txt`)
+## Input File Format (`input.dat`)
 To use the file input mode, create an `input.dat` file in the same directory as the executable. The data must be formatted as follows:
 - **Line 1:** Number of vertices (`V`) and Number of edges (`E`), separated by a space.
 - **Next `E` lines:** Each line represents an edge connecting vertex `u` and vertex `v`. *Note: Vertices must be 0-indexed (from `0` to `V-1`).*
