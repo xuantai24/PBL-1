@@ -26,8 +26,8 @@ public:
     GraphColoring(int v = 0) {
         this->V = v;
         for (int i = 0; i < MAX_V; i++) {
-            colors[i] = -1;
-            degree[i] = 0;
+            colors[i] = -1; // luu trang thai chua to mau
+            degree[i] = 0; // luu bac cua tung vung
             for (int j = 0; j < MAX_V; j++) {
                 adj[i][j] = 0;
             }
@@ -47,13 +47,13 @@ public:
     // tinh do bao hoa cua vung u
     int getSaturation(int u) {
         bool usedColors[MAX_V + 1];
-        for (int i = 0; i <= MAX_V; i++) usedColors[i] = false;
+        for (int i = 0; i <= MAX_V; i++) usedColors[i] = false; // khong co mau nao duoc su dung ban dau
 
         int count = 0;
         for (int v = 0; v < V; v++) {
             if (adj[u][v] == 1 && colors[v] != -1) {
                 if (!usedColors[colors[v]]) {
-                    usedColors[colors[v]] = true;
+                    usedColors[colors[v]] = true; // danh dau mau da duoc su dung
                     count++;
                 }
             }
@@ -224,7 +224,11 @@ void subMenuProcess(GraphColoring &g) {
         cout << "Chon (1/2/0): "; cin >> subChoice;
         
         if (cin.fail()) {
+            
+            cout << "(!) Loi: Vui long chi nhap con so!" << endl;
+            cout << "Nhan Enter de chon lai..."; 
             cin.clear(); cin.ignore(10000, '\n');
+            cin.get();
             continue;
         }
         
@@ -240,6 +244,10 @@ void subMenuProcess(GraphColoring &g) {
         else if (subChoice == 0) {
             exit(0); // Thoat han chuong trinh
         }
+        else {
+            cout << "(!) Loi: Lua chon khong hop le. Vui long chon 1, 2 hoac 0." << endl;
+            cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get();
+        }
     }
 }
 
@@ -253,7 +261,7 @@ int main() {
         cout << "==========================================================================" << endl;
         cout << "|                                                                        |" << endl;
         cout << "|       CHUONG TRINH MO PHONG BAI TOAN TO MAU BAN DO BANG TO MAU         |" << endl;
-        cout << "|                       CAC vung CUA DO THI                              |" << endl;
+        cout << "|                       CAC VUNG CUA DO THI                              |" << endl;
         cout << "|                                                                        |" << endl;
         cout << "==========================================================================" << endl << endl;
         SetConsoleTextAttribute(hConsole, 10); // Mau xanh la cho cac lua chon
