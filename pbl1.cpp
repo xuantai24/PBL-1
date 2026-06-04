@@ -422,7 +422,7 @@ int main() {
             SetConsoleTextAttribute(hConsole, 14);
             if (e > 0) {
                 cout << "\n==================================================" << endl;
-                cout << "             HUONG DAN NHAP vung ke nhau DO THI           " << endl;
+                cout << "           HUONG DAN NHAP VUNG KE NHAU DO THI     " << endl;
                 cout << "==================================================" << endl;
                 cout << " - Do thi hien tai co " << n << " vung (Tu 1 den " << n << ")." << endl;
                 cout << " - Nhap 2 so (u v) de tao vung ke nhau (Vi du: 1 2)." << endl;
