@@ -251,6 +251,213 @@ void subMenuProcess(GraphColoring &g) {
     }
 }
 
+void inputfile(int &n, int &e) {
+            system("cls");
+            HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+            cin.ignore(); // Xoa bo nho dem sau khi doc so tu ban phim
+            SetConsoleTextAttribute(hConsole, 14);
+            cout << "==========================================================================" << endl;
+            cout << "|                                                                        |" << endl;
+            cout << "|                      NHAP DU LIEU DO THI BANG FILE                     |" << endl;
+            cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
+            cout << "==========================================================================" << endl << endl;
+            SetConsoleTextAttribute(hConsole,10);
+            
+            string fileinput;
+            cout << "Nhap ten file (Neu khong nhap, mac dinh la input.dat): ";
+            getline(cin, fileinput); // doc toan bo du lieu, bao gom ca khoang trang
+            if (fileinput.empty()) {
+                fileinput = "input.dat";
+            }
+            if (fileinput == "q" || fileinput == "Q") {
+                return; 
+            }
+            
+              
+            ifstream f(fileinput);
+            if (!f) { 
+                cout << "(!) Loi: Khong thay file!" << endl; 
+                cout << "Nhan Enter de quay lai menu..."<< endl; 
+                cin.get(); return;
+            }
+            if (!(f >> n >> e)) {
+                cout << "(!) Loi: Du lieu trong file khong hop le!" << endl; 
+                cout << "Nhan Enter de quay lai menu..." << endl; 
+                cin.get(); return;
+            }
+            if (n <= 0 || n > MAX_V) {
+                cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl; 
+                cout << "Nhan Enter de quay lai menu..." << endl; 
+                cin.get(); return;
+            }
+            if (e < 0 || e > n * (n - 1) / 2) {
+                cout << "(!) Loi: So vung ke nhau khong hop le!" << endl; 
+                cout << "Nhan Enter de quay lai menu..." << endl; 
+                cin.get(); return;
+            }
+            
+            GraphColoring g(n);
+            bool check = true;
+            for (int i = 0; i < e; i++) {
+                int u, v; 
+                if (!(f >> u >> v)) {
+                    check = false;
+                    cout << "(!) Loi: Du lieu vung ke nhau trong file khong hop le!" << endl; 
+                    break;
+                }
+                if (u < 0 || u >= n || v < 0 || v >= n) {
+                    check = false;
+                    cout << "(!) Loi: Vung ke nhau khong hop le!" << endl; 
+                    break;
+                }
+                g.addEdge(u, v);
+            }
+            f.close();
+            
+            if (!check) {
+                cout << "Nhan Enter de quay lai menu..." << endl; 
+                cin.get();
+                return;
+            }
+            
+            SetConsoleTextAttribute(hConsole, 14); // Mau vang cho thong bao
+            cout << "\n\n=> THANH CONG: Da nap du lieu vao he thong!" << endl;
+            SetConsoleTextAttribute(hConsole, 10); // Tra lai mau xanh la
+            cout << "Nhan Enter de tiep tuc..."; 
+            cin.get();
+            
+            // goi menu phu
+            subMenuProcess(g);
+}
+void inputmanual(int &n, int &e) {
+    while (true) {
+        system("cls");
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(hConsole, 14);
+        cout << "==========================================================================" << endl;
+        cout << "|                                                                        |" << endl;
+        cout << "|                      NHAP DU LIEU DO THI BANG TAY                      |" << endl;
+        cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
+        cout << "==========================================================================" << endl << endl;
+        SetConsoleTextAttribute(hConsole,10);
+
+        string inputStr;
+
+        cout << "Nhap so vung (Nhap 'q' de huy va quay lai Menu chinh): ";
+        cin >> inputStr;
+        
+        // Kiem tra thoat
+        if (inputStr == "q" || inputStr == "Q") {
+            return; 
+        }
+        
+        // Co gang chuyen chuoi thanh so
+        try {
+            n = stoi(inputStr);
+            if (n <= 0 || n > MAX_V) {
+                cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl;
+                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); 
+                continue;
+            }
+        } catch (...) {
+            cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
+            cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); 
+            continue;
+        }
+
+        int maxEdges = n * (n - 1) / 2;
+        cout << "Nhap so vung ke nhau (Toi da " << maxEdges << ", hoac 'q' de huy va quay lai Menu chinh): ";
+        cin >> inputStr;
+        
+        if (inputStr == "q" || inputStr == "Q") {
+            return;
+        }
+        
+        try {
+            e = stoi(inputStr);
+            if (e < 0 || e > maxEdges) {
+                cout << "(!) Loi: So vung ke nhau khong hop le!" << endl;
+                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); 
+                continue;
+            }
+        } catch (...) {
+            cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
+            cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); 
+            continue;
+        }
+        
+        GraphColoring g(n);
+        bool isCancelled = false; // danh dau thoat giua chung
+
+        SetConsoleTextAttribute(hConsole, 14);
+        if (e > 0) {
+            cout << "\n==================================================" << endl;
+            cout << "           HUONG DAN NHAP VUNG KE NHAU DO THI     " << endl;
+            cout << "==================================================" << endl;
+            cout << " - Do thi hien tai co " << n << " vung (Tu 1 den " << n << ")." << endl;
+            cout << " - Nhap 2 so (u v) de tao vung ke nhau (Vi du: 1 2)." << endl;
+            cout << " - (!) Go phim [q] vao bat cu luc nao de HUY va thoat." << endl;
+            cout << "--------------------------------------------------" << endl;
+            SetConsoleTextAttribute(hConsole, 10);
+
+            for (int i = 0; i < e; i++) {
+                string strU, strV; 
+                while (true) {
+                    cout << " -> Nhap vung ke nhau thu " << i + 1 << "/" << e << " (u v hoac q): ";
+                    cin >> strU;
+                    
+                    if (strU == "q" || strU == "Q") {
+                        isCancelled = true; 
+                        break; 
+                    }
+                    
+                    cin >> strV;
+                    
+                    if (strV == "q" || strV == "Q") {
+                        isCancelled = true;
+                        break;
+                    }
+
+                    try {
+                        int u = stoi(strU);
+                        int v = stoi(strV);
+
+                        if (u < 1 || u > n || v < 1 || v > n) {
+                            cout << "    (!) Loi: vung phai tu 1 den " << n << ". Nhap lai!" << endl;
+                            continue;
+                        }
+                        if (u == v) {
+                            cout << "    (!) Loi: Khong duoc noi vung voi chinh no. Nhap lai!" << endl;
+                            continue;
+                        }
+                        
+                        g.addEdge(u - 1, v - 1);
+                        break; 
+                        
+                    } catch (...) {
+                        cout << "    (!) Sai vung dang! Vui long nhap so hoac 'q'." << endl;
+                    }
+                }
+                
+                if (isCancelled) break;
+            }
+        }
+        
+        if (isCancelled) {
+            return;
+        }
+        
+        // --- THONG BAO NHAP TAY THANH CONG ---
+        SetConsoleTextAttribute(hConsole, 14); // Mau vang cho thong bao
+        cout << "\n=> THANH CONG: Da nap du lieu do thi vao he thong!" << endl;
+        cout << "Nhan Enter de tiep tuc..."; 
+        cin.ignore(10000, '\n'); cin.get();
+        
+        // goi menu phu
+        subMenuProcess(g);
+        return; // ket thuc ham va quay ve menu chinh
+    }
+}
 //------------------------------ CHUONG TRINH CHINH -----------------------------//--
 int main() {
     int choice;
@@ -285,206 +492,13 @@ int main() {
             
         case 1:
         {
-            system("cls");
-            cin.ignore(); // Xoa bo nho dem sau khi doc so tu ban phim
-            SetConsoleTextAttribute(hConsole, 14);
-            cout << "==========================================================================" << endl;
-            cout << "|                                                                        |" << endl;
-            cout << "|                      NHAP DU LIEU DO THI BANG FILE                     |" << endl;
-            cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
-            cout << "==========================================================================" << endl << endl;
-            SetConsoleTextAttribute(hConsole,10);
-            
-            string fileinput;
-            cout << "Nhap ten file (Neu khong nhap, mac dinh la input.dat): ";
-            getline(cin, fileinput); // doc toan bo du lieu, bao gom ca khoang trang
-            if (fileinput.empty()) {
-                fileinput = "input.dat";
-            }
-            if (fileinput == "q" || fileinput == "Q") {
-                break; 
-            }
-            
-              
-            ifstream f(fileinput);
-            if (!f) { 
-                cout << "(!) Loi: Khong thay file!" << endl; 
-                cout << "Nhan Enter de quay lai menu..."<< endl; 
-                cin.get(); continue;
-            }
-            if (!(f >> n >> e)) {
-                cout << "(!) Loi: Du lieu trong file khong hop le!" << endl; 
-                cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.get(); continue;
-            }
-            if (n <= 0 || n > MAX_V) {
-                cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl; 
-                cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.get(); continue;
-            }
-            if (e < 0 || e > n * (n - 1) / 2) {
-                cout << "(!) Loi: So vung ke nhau khong hop le!" << endl; 
-                cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.get(); continue;
-            }
-            
-            GraphColoring g(n);
-            bool check = true;
-            for (int i = 0; i < e; i++) {
-                int u, v; 
-                if (!(f >> u >> v)) {
-                    check = false;
-                    cout << "(!) Loi: Du lieu vung ke nhau trong file khong hop le!" << endl; 
-                    break;
-                }
-                if (u < 0 || u >= n || v < 0 || v >= n) {
-                    check = false;
-                    cout << "(!) Loi: Vung ke nhau khong hop le!" << endl; 
-                    break;
-                }
-                g.addEdge(u, v);
-            }
-            f.close();
-            
-            if (!check) {
-                cout << "Nhan Enter de quay lai menu..." << endl; 
-                cin.get();
-                continue;
-            }
-            
-            SetConsoleTextAttribute(hConsole, 14); // Mau vang cho thong bao
-            cout << "\n\n=> THANH CONG: Da nap du lieu vao he thong!" << endl;
-            SetConsoleTextAttribute(hConsole, 10); // Tra lai mau xanh la
-            cout << "Nhan Enter de tiep tuc..."; 
-            cin.get();
-            
-            // goi menu phu
-            subMenuProcess(g);
+            inputfile(n, e);
             break;
         }
         
         case 2:
         {
-            system("cls");
-            SetConsoleTextAttribute(hConsole, 14);
-            cout << "==========================================================================" << endl;
-            cout << "|                                                                        |" << endl;
-            cout << "|                      NHAP DU LIEU DO THI BANG TAY                      |" << endl;
-            cout << "|                 (Go phim [q] de huy va quay lai menu...)               |" << endl;
-            cout << "==========================================================================" << endl << endl;
-            SetConsoleTextAttribute(hConsole,10);
-
-            string inputStr;
-
-            cout << "Nhap so vung (Nhap 'q' de huy va quay lai Menu chinh): ";
-            cin >> inputStr;
-            
-            // Kiem tra thoat
-            if (inputStr == "q" || inputStr == "Q") {
-                break; 
-            }
-            
-            // Co gang chuyen chuoi thanh so
-            try {
-                n = stoi(inputStr);
-                if (n <= 0 || n > MAX_V) {
-                    cout << "(!) Loi: So vung phai tu 1 den " << MAX_V << "!" << endl;
-                    cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
-                }
-            } catch (...) {
-                // Bat loi neu nguoi dung nhap chu ma khong phai 'q' (VD: 'abc')
-                cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
-                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
-            }
-
-            int maxEdges = n * (n - 1) / 2;
-            cout << "Nhap so vung ke nhau (Toi da " << maxEdges << ", hoac 'q' de huy va quay lai Menu chinh): ";
-            cin >> inputStr;
-            
-            if (inputStr == "q" || inputStr == "Q") {
-                break;
-            }
-            
-            try {
-                e = stoi(inputStr);
-                if (e < 0 || e > maxEdges) {
-                    cout << "(!) Loi: So vung ke nhau khong hop le!" << endl;
-                    cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
-                }
-            } catch (...) {
-                cout << "(!) Loi: Vui long chi nhap con so hoac 'q'!" << endl;
-                cout << "Nhan Enter de chon lai..."; cin.ignore(10000, '\n'); cin.get(); continue;
-            }
-            
-            GraphColoring g(n);
-            bool isCancelled = false; // danh dau thoat giua chung
-
-            SetConsoleTextAttribute(hConsole, 14);
-            if (e > 0) {
-                cout << "\n==================================================" << endl;
-                cout << "           HUONG DAN NHAP VUNG KE NHAU DO THI     " << endl;
-                cout << "==================================================" << endl;
-                cout << " - Do thi hien tai co " << n << " vung (Tu 1 den " << n << ")." << endl;
-                cout << " - Nhap 2 so (u v) de tao vung ke nhau (Vi du: 1 2)." << endl;
-                cout << " - (!) Go phim [q] vao bat cu luc nao de HUY va thoat." << endl;
-                cout << "--------------------------------------------------" << endl;
-            SetConsoleTextAttribute(hConsole, 10);
-
-                for (int i = 0; i < e; i++) {
-                    string strU, strV; 
-                    while (true) {
-                        cout << " -> Nhap vung ke nhau thu " << i + 1 << "/" << e << " (u v hoac q): ";
-                        cin >> strU;
-                        
-                        if (strU == "q" || strU == "Q") {
-                            isCancelled = true; 
-                            break; 
-                        }
-                        
-                        cin >> strV;
-                        
-                        if (strV == "q" || strV == "Q") {
-                            isCancelled = true;
-                            break;
-                        }
-
-                        try {
-                            int u = stoi(strU);
-                            int v = stoi(strV);
-
-                            if (u < 1 || u > n || v < 1 || v > n) {
-                                cout << "    (!) Loi: vung phai tu 1 den " << n << ". Nhap lai!" << endl;
-                                continue;
-                            }
-                            if (u == v) {
-                                cout << "    (!) Loi: Khong duoc noi vung voi chinh no. Nhap lai!" << endl;
-                                continue;
-                            }
-                            
-                            g.addEdge(u - 1, v - 1);
-                            break; 
-                            
-                        } catch (...) {
-                            cout << "    (!) Sai vung dang! Vui long nhap so hoac 'q'." << endl;
-                        }
-                    }
-                    
-                    if (isCancelled) break;
-                }
-            }
-            
-            if (isCancelled) {
-                break;
-            }
-            
-            // --- THONG BAO NHAP TAY THANH CONG ---
-            SetConsoleTextAttribute(hConsole, 14); // Mau vang cho thong bao
-            cout << "\n=> THANH CONG: Da nap du lieu do thi vao he thong!" << endl;
-            cout << "Nhan Enter de tiep tuc..."; 
-            cin.ignore(); cin.get();
-            
-            // goi menu phu
-            subMenuProcess(g);
+            inputmanual(n, e);
             break;
         }
         default:
